@@ -1,5 +1,5 @@
 const STORAGE_KEY='ira_radio_game_center_v1';
-const APP_VERSION='1.4.1';
+const APP_VERSION='1.4.1a';
 const DEFAULT_SCHEDULE=[
  {week:1,date:'2026-08-28',time:'7:30 PM',opponent:'Roby Lions',rank:80,site:'Away',district:false},
  {week:2,date:'2026-09-04',time:'7:30 PM',opponent:'Jayton Jaybirds',rank:13,site:'Home',district:false},
@@ -259,6 +259,11 @@ function applyPlayForm(fd){const p=Object.fromEntries(fd.entries()),g=ensureGame
  if(p.type==='score'){p.points=p.scoreType==='manual'?Number(p.manualPoints||0):Number(p.scoreType||0)}
  if(p.type==='turnover')p.turnover=true;
  if((p.type==='run'&&p.fumble)||(p.type==='pass'&&p.result==='fumble'))p.turnover=p.recoveryTeam&&p.recoveryTeam!==p.team;
+ // Scoring boundary must be checked BEFORE moveBall clamps the field to Own/Opp 1.
+ // A normal run or completed pass that reaches/crosses the goal line is a TD even if the broadcaster did not tap TD.
+ const goalDistanceBefore=distanceToGoal(g.ballOn);
+ const autoGoalLineTD=(p.type==='run'&&!p.fumble&&p.yards>=goalDistanceBefore)||(p.type==='pass'&&p.complete&&!p.interception&&!p.sack&&p.result!=='fumble'&&p.yards>=goalDistanceBefore);
+ if(autoGoalLineTD)p.touchdown=true;
  [p.runner,p.passer,p.receiver,p.scorer].filter(Boolean).forEach(id=>{state.playerUse=state.playerUse||{ira:{},opp:{}};state.playerUse[p.team]=state.playerUse[p.team]||{};state.playerUse[p.team][id]=(state.playerUse[p.team][id]||0)+1});
  if(p.type==='possession'){g.possession=p.driveTeam||g.possession;g.ballOn=`${p.ballSide||'Own'} ${Number(p.ballYard||20)}`;seriesReset(g);g.plays.push(p);save();return {p,td:false}}
  g.plays.push(p);
