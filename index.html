@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#111111" />
   <title>Ira Bulldogs Radio Game Center</title>
   <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=130" />
 </head>
 <body>
   <header class="topbar">
@@ -58,6 +58,29 @@
     </form>
   </dialog>
 
+  <dialog id="scoreDialog">
+    <form method="dialog" class="dialog-card score-dialog-card">
+      <div class="dialog-heading">
+        <div>
+          <div class="eyebrow">QUICK SCORE</div>
+          <h2 id="scoreDialogTitle">Ira Score</h2>
+        </div>
+        <button value="cancel" class="icon-btn" aria-label="Close">×</button>
+      </div>
+      <div class="quick-score-grid">
+        <button type="button" data-score-add="1">+1</button>
+        <button type="button" data-score-add="2">+2</button>
+        <button type="button" data-score-add="6">+6</button>
+      </div>
+      <div class="quick-score-corrections">
+        <button type="button" class="ghost" data-score-add="-1">−1</button>
+        <label>Exact score<input id="exactScoreInput" type="number" inputmode="numeric" min="0"></label>
+        <button type="button" id="setExactScoreBtn">Set Score</button>
+      </div>
+      <p class="muted small">Tap a quick button during the broadcast, or use exact score for corrections.</p>
+    </form>
+  </dialog>
+
   <dialog id="playDialog">
     <form method="dialog" class="dialog-card wide" id="playForm">
       <div class="dialog-heading">
@@ -76,6 +99,6 @@
   </dialog>
 
   <div id="toast" class="toast" role="status"></div>
-  <script src="app.js"></script>
+  <script src="app.js?v=130"></script>
 </body>
 </html>
