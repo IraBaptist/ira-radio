@@ -1,5 +1,5 @@
 const STORAGE_KEY='ira_radio_game_center_v1';
-const APP_VERSION='1.2';
+const APP_VERSION='1.2.1';
 const DEFAULT_SCHEDULE=[
  {week:1,date:'2026-08-28',time:'7:30 PM',opponent:'Roby Lions',rank:80,site:'Away',district:false},
  {week:2,date:'2026-09-04',time:'7:30 PM',opponent:'Jayton Jaybirds',rank:13,site:'Home',district:false},
@@ -44,11 +44,24 @@ async function loadCloudGame(){
  if(!url||!key){toast('Add the Apps Script URL in Settings');return}
  if(!navigator.onLine){toast('Internet connection needed to load cloud game');return}
  try{
-  const r=await fetch(url+(url.includes('?')?'&':'?')+'action=state&key='+encodeURIComponent(key)+'&_='+Date.now());
-  if(!r.ok)throw new Error('Load failed');const x=await r.json();if(!x.ok||!x.data)throw new Error(x.error||'No cloud game found');
+  const x=await jsonp(url,{action:'state',key,_:Date.now()});
+  if(!x||!x.ok||!x.data)throw new Error((x&&x.error)||'No cloud game found');
   const keep={syncUrl:state.settings.syncUrl,publishKey:state.settings.publishKey,listenUrl:state.settings.listenUrl};
   state=mergeState(initialState(),x.data);state.settings={...state.settings,...keep};save('Loaded from cloud');toast('Current game loaded from cloud');
- }catch(e){toast('Could not load cloud game')}
+ }catch(e){console.error('Cloud load failed',e);toast('Could not load cloud game')}
+}
+function jsonp(url,params={}){
+ return new Promise((resolve,reject)=>{
+  const cb='iraCloud_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+  const script=document.createElement('script');
+  const cleanup=()=>{try{delete window[cb]}catch(_){window[cb]=undefined}script.remove()};
+  const timer=setTimeout(()=>{cleanup();reject(new Error('Cloud request timed out'))},12000);
+  window[cb]=data=>{clearTimeout(timer);cleanup();resolve(data)};
+  const q=new URLSearchParams({...params,callback:cb});
+  script.src=url+(url.includes('?')?'&':'?')+q.toString();
+  script.onerror=()=>{clearTimeout(timer);cleanup();reject(new Error('Cloud request failed'))};
+  document.head.appendChild(script);
+ });
 }
 async function publishPublic(){
  const url=(state.settings.syncUrl||'').trim(),key=(state.settings.publishKey||'').trim();
