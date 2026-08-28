@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#111111" />
+  <title>Ira Bulldogs Radio Game Center</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <div class="eyebrow">IRA BULLDOGS</div>
+      <h1>Radio Game Center</h1>
+    </div>
+    <div class="top-actions">
+      <span id="publicStatus" class="save-state">Public: setup needed</span>
+      <span id="saveState" class="save-state">Saved locally</span>
+      <a class="public-link" href="public.html" target="_blank">Public Game Center</a>
+      <button class="ghost" id="settingsBtn">Settings</button>
+    </div>
+  </header>
+
+  <nav class="tabs" aria-label="Game center sections">
+    <button data-view="pregame" class="active">Pregame</button>
+    <button data-view="live">Live Game</button>
+    <button data-view="halftime">Halftime</button>
+    <button data-view="postgame">Postgame</button>
+    <button data-view="roster">Rosters</button>
+  </nav>
+
+  <main>
+    <section id="pregame" class="view active"></section>
+    <section id="live" class="view"></section>
+    <section id="halftime" class="view"></section>
+    <section id="postgame" class="view"></section>
+    <section id="roster" class="view"></section>
+  </main>
+
+  <dialog id="settingsDialog">
+    <form method="dialog" class="dialog-card">
+      <h2>Settings</h2>
+      <label>Google Apps Script sync URL
+        <input id="syncUrlInput" placeholder="https://script.google.com/macros/s/.../exec" />
+      </label>
+      <label>Public scoreboard publish key
+        <input id="publishKeyInput" placeholder="Publish key" />
+      </label>
+      <label>Listen Live URL (optional)
+        <input id="listenUrlInput" placeholder="https://…" />
+      </label>
+      <p class="muted">The same Apps Script URL handles SixManFootball sync and the public scoreboard. Live stats still work offline; public updates resume when your device reconnects.</p>
+      <div class="dialog-actions">
+        <button value="cancel" class="ghost">Cancel</button>
+        <button value="default" id="saveSettingsBtn">Save</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="playDialog">
+    <form method="dialog" class="dialog-card wide" id="playForm">
+      <div class="dialog-heading">
+        <div>
+          <div class="eyebrow" id="playDialogEyebrow">NEW PLAY</div>
+          <h2 id="playDialogTitle">Run</h2>
+        </div>
+        <button value="cancel" class="icon-btn" aria-label="Close">×</button>
+      </div>
+      <div id="playFormFields"></div>
+      <div class="dialog-actions">
+        <button value="cancel" class="ghost">Cancel</button>
+        <button type="submit" value="default">Save Play</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>

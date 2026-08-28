@@ -1,0 +1,9 @@
+{
+  "name":"Ira Bulldogs Radio Game Center",
+  "short_name":"Ira Radio",
+  "start_url":"./",
+  "display":"standalone",
+  "background_color":"#f6f4ef",
+  "theme_color":"#111111",
+  "icons":[]
+}
