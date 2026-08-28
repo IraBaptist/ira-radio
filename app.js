@@ -1,5 +1,5 @@
 const STORAGE_KEY='ira_radio_game_center_v1';
-const APP_VERSION='1.4.1a';
+const APP_VERSION='1.4.1b';
 const DEFAULT_SCHEDULE=[
  {week:1,date:'2026-08-28',time:'7:30 PM',opponent:'Roby Lions',rank:80,site:'Away',district:false},
  {week:2,date:'2026-09-04',time:'7:30 PM',opponent:'Jayton Jaybirds',rank:13,site:'Home',district:false},
