@@ -49,3 +49,53 @@ input,select,textarea{font-size:16px}
 input,select,textarea,button{font-size:16px}
 .v141-controls{grid-template-columns:repeat(3,minmax(0,1fr))}.v141-controls button{min-height:62px}.v141-meta{grid-template-columns:repeat(6,minmax(0,1fr))}.field-button{width:100%;background:#fff;color:#111;border:1px solid var(--line);padding:10px}.two-col{grid-template-columns:repeat(2,minmax(0,1fr))!important}.one-col{grid-template-columns:1fr!important}.field-label{font-weight:800;margin:8px 0}.yard-section,.special-result{margin-top:14px;padding:12px;border:1px solid var(--line);border-radius:12px;background:#faf9f6}.quick-yards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:8px 0}.quick-yards button{min-height:50px}.result-buttons{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}.result-buttons button.selected,.big-choice-grid button.selected{outline:4px solid #111;outline-offset:2px}.pass-results button{flex:1 1 30%;min-height:54px}.tackler-picks{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.check-pill{display:flex!important;grid-template-columns:auto 1fr!important;align-items:center;gap:7px;border:1px solid var(--line);border-radius:999px;padding:9px 11px;background:#fff;color:#111!important}.check-pill input{width:auto}.clock-picker{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}.clock-picker select{font-size:24px;text-align:center;min-height:54px}.big-choice-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.big-choice-grid button{min-height:72px;font-size:1.05rem}.full-primary{width:100%;min-height:58px;margin-top:14px}.flow-close{float:right}.stats-stack{display:grid;gap:16px;margin-top:16px}.stats-card,.stats-wide{width:100%}.danger-zone{border-top:1px solid var(--line);margin-top:14px;padding-top:14px}.research-summary{margin:12px 0}.player-actions{display:flex;gap:6px}
 @media(max-width:800px){main{padding:10px}.topbar{padding:12px 14px}.top-actions .public-link,.top-actions .save-state{display:none}.tabs{top:65px}.grid.two,.grid.live-layout{grid-template-columns:1fr}.v141-meta{grid-template-columns:repeat(3,1fr)}.v141-controls{grid-template-columns:repeat(2,1fr)}.stat-strip{grid-template-columns:repeat(3,1fr)}.form-grid,.two-col{grid-template-columns:1fr!important}.schedule-row{grid-template-columns:64px 1fr auto}.schedule-row>div:last-child{grid-column:2/-1}.quick-yards{grid-template-columns:repeat(4,1fr)}.pass-results button{flex-basis:45%}.dialog-card{max-height:92vh;overflow:auto}.sticky-play-actions{position:sticky;top:0;background:#fff;z-index:4;padding:8px 0}.roster-row{grid-template-columns:50px 1fr}.player-actions{grid-column:2;justify-content:flex-start}}
+
+/* V1.4.1c CRITICAL PHONE MODAL WIDTH HOTFIX */
+#flowDialog,#clockDialog,#rosterDialog,#scoreDialog,#settingsDialog{
+  box-sizing:border-box;
+  width:min(760px,calc(100vw - 20px));
+  max-width:calc(100vw - 20px);
+  margin:auto;
+  padding:0;
+  border:0;
+  border-radius:18px;
+  overflow:hidden;
+}
+#flowDialog .dialog-card,#clockDialog .dialog-card,#rosterDialog .dialog-card,#scoreDialog .dialog-card,#settingsDialog .dialog-card{
+  width:100%;
+  max-width:none;
+  min-width:0;
+}
+#flowMount{width:100%;min-width:0;overflow-wrap:anywhere}
+#flowMount .big-choice-grid{width:100%;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#flowMount .big-choice-grid button{width:100%;min-width:0;min-height:76px;padding:14px 10px;white-space:normal;line-height:1.15}
+@media(max-width:560px){
+  #flowDialog,#clockDialog,#rosterDialog,#scoreDialog,#settingsDialog{
+    width:calc(100vw - 16px)!important;
+    max-width:calc(100vw - 16px)!important;
+    max-height:calc(100dvh - 16px)!important;
+    height:auto!important;
+    margin:auto!important;
+    border-radius:16px!important;
+  }
+  #flowDialog .dialog-card,#clockDialog .dialog-card,#rosterDialog .dialog-card,#scoreDialog .dialog-card,#settingsDialog .dialog-card{
+    width:100%!important;
+    height:auto!important;
+    max-height:calc(100dvh - 16px)!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    padding:16px!important;
+  }
+  #flowMount .big-choice-grid,#flowMount .big-choice-grid.two{
+    grid-template-columns:1fr 1fr!important;
+    gap:10px!important;
+  }
+  #flowMount .big-choice-grid button{
+    min-height:82px!important;
+    font-size:16px!important;
+    padding:14px 8px!important;
+  }
+}
+@media(max-width:360px){
+  #flowMount .big-choice-grid,#flowMount .big-choice-grid.two{grid-template-columns:1fr!important}
+}
