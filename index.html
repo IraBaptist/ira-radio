@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#111111" />
   <title>Ira Bulldogs Radio Game Center</title>
   <link rel="manifest" href="manifest.json" />
-  <link rel="stylesheet" href="styles.css?v=140" />
+  <link rel="stylesheet" href="styles.css?v=141" />
 </head>
 <body>
   <header class="topbar">
@@ -52,7 +52,7 @@
       <label>Listen Live URL (optional)
         <input id="listenUrlInput" placeholder="https://…" />
       </label>
-      <p class="muted">The same Apps Script URL handles SixManFootball sync and the public scoreboard. Live stats still work offline; public updates resume when your device reconnects.</p>
+      <p class="muted">The same Apps Script URL handles opponent research, SixManFootball sync and the public scoreboard. Live stats still work offline; public updates resume when your device reconnects.</p><div class="danger-zone"><strong>Game-day reset</strong><p class="muted small">Clears only this week’s score, clock, plays, stats and notes. Rosters, schedule and settings stay.</p><button type="button" class="danger" id="resetTestBtn">Reset Test / Game Data</button></div>
       <div class="dialog-actions">
         <button value="cancel" class="ghost">Cancel</button>
         <button value="default" id="saveSettingsBtn">Save</button>
@@ -74,7 +74,7 @@
         <button type="button" data-score-add="2">+2</button>
         <button type="button" data-score-add="6">+6</button>
       </div>
-      <div class="quick-score-corrections">
+      <div id="scoreClockMount"></div><div class="quick-score-corrections">
         <button type="button" class="ghost" data-score-add="-1">−1</button>
         <label>Exact score<input id="exactScoreInput" type="number" inputmode="numeric" min="0"></label>
         <button type="button" id="setExactScoreBtn">Set Score</button>
@@ -101,7 +101,13 @@
     </form>
   </dialog>
 
+
+  <dialog id="clockDialog"><form method="dialog" class="dialog-card"><div class="dialog-heading"><div><div class="eyebrow">GAME CLOCK</div><h2>Adjust Clock</h2></div><button value="cancel" class="icon-btn">×</button></div><div id="clockPickerMount"></div><div class="dialog-actions"><button value="cancel" class="ghost">Cancel</button><button type="button" id="saveClockBtn">Save Clock</button></div></form></dialog>
+
+  <dialog id="flowDialog"><div class="dialog-card wide"><button class="icon-btn flow-close" onclick="document.getElementById('flowDialog').close()">×</button><div id="flowMount"></div></div></dialog>
+
+  <dialog id="rosterDialog"><form method="dialog" class="dialog-card"><div class="dialog-heading"><div><div class="eyebrow">ROSTER</div><h2>Edit Player</h2></div><button value="cancel" class="icon-btn">×</button></div><div class="form-grid one-col"><label>Jersey number<input id="editRosterNum" inputmode="numeric"></label><label>Player name<input id="editRosterName"></label><label>Position<input id="editRosterPos"></label></div><div class="dialog-actions"><button value="cancel" class="ghost">Cancel</button><button type="button" id="saveRosterEdit">Save Player</button></div></form></dialog>
   <div id="toast" class="toast" role="status"></div>
-  <script src="app.js?v=140"></script>
+  <script src="app.js?v=141"></script>
 </body>
 </html>
