@@ -1,5 +1,5 @@
-const CACHE='ira-radio-v1.4.1c';
-const ASSETS=['./','./index.html','./styles.css?v=1413','./app.js?v=1412','./manifest.json','./public.html','./public.css','./public.js','./config.js'];
+const CACHE='ira-radio-v1.5.0';
+const ASSETS=['./','./index.html','./styles.css?v=1500','./app.js?v=1500','./manifest.json','./public.html','./public.css','./public.js','./config.js'];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));});
 self.addEventListener('activate',e=>{e.waitUntil((async()=>{for(const k of await caches.keys())if(k!==CACHE)await caches.delete(k);await self.clients.claim();})());});
 self.addEventListener('fetch',e=>{
