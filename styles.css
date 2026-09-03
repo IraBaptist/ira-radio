@@ -120,3 +120,15 @@ input,select,textarea,button{font-size:16px}
 .coin-toss-live{text-align:center;font-weight:800;margin:8px 0 0;color:#ddd}
 .setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.setup-grid>div{border:1px solid #333;border-radius:12px;padding:14px}.color-control{display:flex;align-items:center;gap:10px;margin:8px 0}.color-control input{width:70px;height:44px;padding:2px}.color-swatch{width:42px;height:42px;border-radius:8px;border:2px solid #777}.color-presets{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.color-presets button{width:34px;height:34px;border-radius:50%;background:var(--swatch)!important;border:2px solid #aaa!important;padding:0}.penalty-quick{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 14px}.penalty-quick button.selected{outline:3px solid var(--pos-accent)}.offsetting-details{margin-top:14px;padding:14px;border:2px dashed var(--pos-accent);border-radius:12px}.offsetting-details fieldset{border:1px solid #555;border-radius:10px;padding:10px}.offsetting-details legend{font-weight:900}.event-row strong{line-height:1.3}
 @media(max-width:760px){.setup-grid{grid-template-columns:1fr}}
+
+
+/* V1.5.3 GAME-DAY CLARITY */
+:root{--inactive-team:#707070;--neutral-action:#111111}
+.possession-accent .accent-control,.possession-accent .live-controls button,.possession-accent .quarter-button{background:var(--neutral-action)!important}
+.possession-accent .possession button:not(.active){background:var(--inactive-team)!important;border-color:#8a8a8a!important;color:#fff!important;opacity:.78!important}
+.possession-accent .possession button.active{background:var(--pos-accent)!important;border-color:var(--pos-accent)!important;color:var(--pos-contrast)!important;opacity:1!important}
+.quick-yards button.selected,.penalty-quick button.selected,.result-buttons button.selected,.big-choice-grid button.selected{outline:5px solid var(--pos-accent,#e66b16)!important;outline-offset:3px!important;box-shadow:0 0 0 2px #111!important;transform:translateY(-1px)}
+.clock-direct{border:2px solid #fff!important;background:#111!important;color:#fff!important;border-radius:12px;padding:6px 14px;cursor:pointer;min-width:110px}
+.score-diff{font-size:.9rem;font-weight:950;letter-spacing:.04em;margin-top:3px}.score-diff.tied{color:#ddd}.mercy{display:block;margin-top:4px;padding:4px 7px;border-radius:7px;font-size:.72rem}.mercy40{background:#f5b942;color:#111}.mercy45{background:#b91c1c;color:#fff}
+.halftime-kickoff{margin-top:12px;background:#111;border:2px solid #fff;border-radius:12px;padding:12px 14px;font-weight:950;font-size:1.1rem}
+.active-color-label{font-size:.82rem;letter-spacing:.04em}.coin-toss-live{background:#171717;border:1px solid #555;border-radius:8px;padding:7px 10px}
