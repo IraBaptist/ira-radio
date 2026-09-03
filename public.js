@@ -1,15 +1,33 @@
 const API=(window.IRA_PUBLIC_API_URL||'').trim();
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function qlabel(q){return q===1?'1st':q===2?'2nd':q===3?'3rd':q===4?'4th':'OT'}
+function qlabel(q){return Number(q)>=5?'OT':`Q${Number(q)||1}`}
 function setBadge(text,cls=''){const e=document.getElementById('connectionBadge');e.textContent=text;e.className='connection-badge '+cls}
-function leaderTable(title,rows=[],a='Att',b='Yds'){return `<h3>${esc(title)}</h3>${rows.length?`<div class="table-wrap"><table><thead><tr><th>Player</th><th class="num">${a}</th><th class="num">${b}</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.name)}</td><td class="num">${r.attempts??''}</td><td class="num">${r.value??''}</td></tr>`).join('')}</tbody></table></div>`:'<p class="muted">No stats yet.</p>'}`}
-function defenseTable(title,rows=[]){return `<h3>${esc(title)}</h3>${rows.length?`<div class="table-wrap"><table><thead><tr><th>Player</th><th class="num">Tkl</th><th class="num">Sack</th><th class="num">INT</th><th class="num">FR</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.name)}</td><td class="num">${r.tackles||0}</td><td class="num">${r.sacks||0}</td><td class="num">${r.ints||0}</td><td class="num">${r.fr||0}</td></tr>`).join('')}</tbody></table></div>`:'<p class="muted">No defensive leaders yet.</p>'}`}
-function teamStatsCard(name,s){return `<div class="team-stat-block"><h3>${esc(name)}</h3><div class="public-stat-grid"><div class="public-stat"><strong>${s.totalYds||0}</strong>Total yards</div><div class="public-stat"><strong>${s.rushYds||0}</strong>Rush yards</div><div class="public-stat"><strong>${s.passYds||0}</strong>Pass yards</div><div class="public-stat"><strong>${s.firstDowns||0}</strong>First downs</div><div class="public-stat"><strong>${s.turnovers||0}</strong>Turnovers</div><div class="public-stat"><strong>${s.plays||0}</strong>Plays</div></div></div>`}
-function teamLeaders(name,L={}){return `<div class="team-leaders"><h2>${esc(name)} Individual Stats</h2>${leaderTable('Rushing',L.rushing||[],'Car','Yds')}${leaderTable('Passing',L.passing||[],'Att','Yds')}${leaderTable('Receiving',L.receiving||[],'Rec','Yds')}${defenseTable('Defense',L.defense||[])}</div>`}
-function render(d){if(!d||!d.ok||!d.data){document.getElementById('publicApp').innerHTML=`<div class="card setup-card"><h2>No live game published yet</h2><p class="muted">Once the broadcaster starts publishing, the live scoreboard and play-by-play will appear here automatically.</p></div>`;setBadge('Waiting','stale');return}
- const x=d.data,g=x.game,s=x.stats||{},ira=s.ira||{},opp=s.opp||{},plays=x.plays||[],latest=plays.at(-1),age=(Date.now()-new Date(x.updated).getTime())/1000,L=x.leaders||{},iraL=L.ira||{rushing:L.rushing||[],passing:L.passing||[],receiving:L.receiving||[]},oppL=L.opp||{};setBadge(age<45?'LIVE':'Last update '+Math.max(1,Math.round(age/60))+'m ago',age<45?'live':'stale');
- document.getElementById('publicApp').innerHTML=`<div class="card hero"><div class="eyebrow">${g.final?'FINAL':`WEEK ${g.week} • ${qlabel(g.quarter)} ${esc(g.clock)}`}</div><div class="public-score"><div><div class="public-team">IRA BULLDOGS</div><div class="public-score-number">${g.iraScore}</div></div><div class="score-dash">–</div><div><div class="public-team">${esc(g.opponent)}</div><div class="public-score-number">${g.oppScore}</div></div></div>${!g.final?`<div class="public-situation">${g.possession==='ira'?'IRA BULLDOGS BALL':esc(g.opponent.toUpperCase())+' BALL'} • ${g.down}${g.down===1?'st':g.down===2?'nd':g.down===3?'rd':'th'} & ${esc(g.toGo)} • ${esc(g.ballOn)}</div>`:''}${x.listenUrl?`<a class="listen-btn" href="${esc(x.listenUrl)}" target="_blank" rel="noopener">▶ Listen Live</a>`:''}</div>
- <div class="public-grid"><div class="card"><h2>Latest Play</h2><div class="latest-play">${latest?esc(latest.text):'Waiting for the first play.'}</div><h2 style="margin-top:20px">Team Stats</h2>${teamStatsCard('Ira Bulldogs',ira)}${teamStatsCard(g.opponent,opp)}</div><div class="card">${teamLeaders('Ira Bulldogs',iraL)}</div><div class="card">${teamLeaders(g.opponent,oppL)}</div><div class="card"><h2>Game Comparison</h2><div class="table-wrap"><table><thead><tr><th>Stat</th><th class="num">Ira Bulldogs</th><th class="num">${esc(g.opponent)}</th></tr></thead><tbody><tr><td>Total yards</td><td class="num">${ira.totalYds||0}</td><td class="num">${opp.totalYds||0}</td></tr><tr><td>Rushing</td><td class="num">${ira.rushYds||0}</td><td class="num">${opp.rushYds||0}</td></tr><tr><td>Passing</td><td class="num">${ira.passYds||0}</td><td class="num">${opp.passYds||0}</td></tr><tr><td>Turnovers</td><td class="num">${ira.turnovers||0}</td><td class="num">${opp.turnovers||0}</td></tr></tbody></table></div></div></div>
- <div class="card" style="margin-top:16px"><h2>Play-by-Play</h2><div class="public-playlog">${plays.length?[...plays].reverse().map(p=>`<div class="public-play"><strong>#${p.seq}</strong>${esc(p.text)}</div>`).join(''):'<p class="muted">No plays published yet.</p>'}</div></div>`}
-function jsonp(){if(!API){document.getElementById('publicApp').innerHTML=`<div class="card setup-card"><h2>Public Game Center is ready</h2><p>Paste your deployed Google Apps Script <strong>/exec</strong> URL into <code>config.js</code>.</p></div>`;setBadge('Setup needed','stale');return}const cb='iraPublic_'+Date.now()+'_'+Math.floor(Math.random()*10000);window[cb]=d=>{try{render(d)}finally{delete window[cb];script.remove()}};const script=document.createElement('script');script.src=API+(API.includes('?')?'&':'?')+'action=public&callback='+encodeURIComponent(cb)+'&_='+Date.now();script.onerror=()=>{setBadge('Connection issue','stale');delete window[cb];script.remove()};document.body.appendChild(script)}
+function render(d){
+  if(!d||!d.ok||!d.data){document.getElementById('publicApp').innerHTML='<div class="card setup-card"><h2>No live game published yet</h2><p class="muted">The scoreboard will appear when the radio booth publishes the game.</p></div>';setBadge('Waiting','stale');return}
+  const x=d.data,g=x.game||{},age=(Date.now()-new Date(x.updated).getTime())/1000,period=g.quarterLabel||qlabel(g.quarter),status=g.final?'FINAL':`${period} • ${esc(g.clock||'')}`;
+  setBadge(age<45?'LIVE':'Last update '+Math.max(1,Math.round(age/60))+'m ago',age<45?'live':'stale');
+  const possession=!g.final?(g.possession==='ira'?'🏈 IRA BULLDOGS BALL':`🏈 ${esc(String(g.opponent||'OPPONENT').toUpperCase())} BALL`):'';
+  const update=String(g.latestUpdate||'').trim();
+  document.getElementById('publicApp').innerHTML=`
+    <section class="public-scoreboard card">
+      <div class="public-statusline">${status}</div>
+      <div class="public-score">
+        <div class="public-team-block"><div class="public-team">IRA BULLDOGS</div><div class="public-score-number">${Number(g.iraScore||0)}</div></div>
+        <div class="score-dash">–</div>
+        <div class="public-team-block"><div class="public-team">${esc(g.opponent||'Opponent')}</div><div class="public-score-number">${Number(g.oppScore||0)}</div></div>
+      </div>
+      ${possession?`<div class="public-possession">${possession}</div>`:''}
+      ${x.listenUrl?`<a class="listen-btn" href="${esc(x.listenUrl)}" target="_blank" rel="noopener">▶ Listen Live</a>`:''}
+    </section>
+    <section class="card public-update-card">
+      <div class="eyebrow">LATEST UPDATE</div>
+      <div class="latest-update">${update?esc(update):'Score and game status are live. Additional radio updates will appear here when sent from the booth.'}</div>
+    </section>`;
+}
+function jsonp(){
+  if(!API){document.getElementById('publicApp').innerHTML='<div class="card setup-card"><h2>Public scoreboard is ready</h2><p>Connect the deployed Google Apps Script URL in <code>config.js</code>.</p></div>';setBadge('Setup needed','stale');return}
+  const cb='iraPublic_'+Date.now()+'_'+Math.floor(Math.random()*10000);let script;
+  window[cb]=d=>{try{render(d)}finally{delete window[cb];script.remove()}};
+  script=document.createElement('script');script.src=API+(API.includes('?')?'&':'?')+'action=public&callback='+encodeURIComponent(cb)+'&_='+Date.now();script.onerror=()=>{setBadge('Connection issue','stale');delete window[cb];script.remove()};document.body.appendChild(script);
+}
 jsonp();setInterval(jsonp,12000);
