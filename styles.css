@@ -132,3 +132,17 @@ input,select,textarea,button{font-size:16px}
 .score-diff{font-size:.9rem;font-weight:950;letter-spacing:.04em;margin-top:3px}.score-diff.tied{color:#ddd}.mercy{display:block;margin-top:4px;padding:4px 7px;border-radius:7px;font-size:.72rem}.mercy40{background:#f5b942;color:#111}.mercy45{background:#b91c1c;color:#fff}
 .halftime-kickoff{margin-top:12px;background:#111;border:2px solid #fff;border-radius:12px;padding:12px 14px;font-weight:950;font-size:1.1rem}
 .active-color-label{font-size:.82rem;letter-spacing:.04em}.coin-toss-live{background:#171717;border:1px solid #555;border-radius:8px;padding:7px 10px}
+
+/* V1.6 FINAL: one team-accent rule everywhere. */
+.dialog-card { --team-accent:#111111; --team-accent-text:#ffffff; }
+.dialog-card .result-buttons button,
+.dialog-card .quick-yards button,
+.dialog-card .big-choice-grid button { background:#707070; color:#fff; border-color:#8a8a8a; }
+.dialog-card .result-buttons button.selected,
+.dialog-card .quick-yards button.selected,
+.dialog-card .big-choice-grid button.selected { background:var(--team-accent); color:var(--team-accent-text); border-color:var(--team-accent); box-shadow:0 0 0 3px rgba(0,0,0,.10); }
+.unedited-row td { border-top:2px solid #d8d8d8; background:#fafafa; }
+.current-situation { margin:10px 0; font-size:1.08rem; }
+details.card summary { cursor:pointer; }
+.offense-card.ira-offense .offense-banner { background:#e66b16; color:#111; }
+.offense-card.opp-offense .offense-banner { background:var(--opp-color,#111); color:#fff; }
