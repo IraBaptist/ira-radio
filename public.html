@@ -1,23 +1,20 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="theme-color" content="#111111" />
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <title>Ira Bulldogs Live Score</title>
-  <link rel="stylesheet" href="styles.css?v=1600" />
-  <link rel="stylesheet" href="public.css?v=1600" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Ira Bulldogs Scoreboard</title>
+  <link rel="stylesheet" href="public.css?v=2000">
 </head>
-<body class="public-body">
-  <header class="public-top">
-    <div><div class="eyebrow">IRA BULLDOGS FOOTBALL</div><h1>Live Radio Scoreboard</h1></div>
-    <div id="connectionBadge" class="connection-badge">Connecting…</div>
-  </header>
-  <main class="public-main"><section id="publicApp"><div class="card public-loading"><h2>Loading live game…</h2><p class="muted">The scoreboard updates automatically.</p></div></section></main>
-  <footer class="public-footer">Ira Bulldogs Radio • Live game updates</footer>
+<body>
+  <main class="public-shell">
+    <div id="connectionBadge" class="connection">Connecting…</div>
+    <div id="publicApp" aria-live="polite"></div>
+  </main>
   <script src="config.js"></script>
-  <script src="public.js?v=1600"></script>
+  <script src="public.js?v=2000"></script>
 </body>
 </html>

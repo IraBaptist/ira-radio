@@ -1,14 +1,32 @@
-const API=(window.IRA_PUBLIC_API_URL||'').trim();
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function qlabel(q){return Number(q)>=5?'OT':`Q${Number(q)||1}`}
-function setBadge(text,cls=''){const e=document.getElementById('connectionBadge');e.textContent=text;e.className='connection-badge '+cls}
-function ordDown(d){d=Number(d||1);return d+(d===1?'st':d===2?'nd':d===3?'rd':'th')}
-function render(d){
- if(!d||!d.ok||!d.data){document.getElementById('publicApp').innerHTML='<div class="card setup-card"><h2>No live game published yet</h2><p class="muted">The scoreboard will appear when the radio booth publishes the game.</p></div>';setBadge('Waiting','stale');return}
- const x=d.data,g=x.game||{},age=(Date.now()-new Date(x.updated).getTime())/1000,period=g.quarterLabel||qlabel(g.quarter),status=g.final?'FINAL':period==='HALFTIME'?'HALFTIME':`${period} • ${esc(g.clock||'')}`;
- setBadge(age<45?'LIVE':'Last update '+Math.max(1,Math.round(age/60))+'m ago',age<45?'live':'stale');
- const update=String(g.latestUpdate||'').trim(),play=String(g.latestPlay||'').trim(),situation=g.final?'':`${ordDown(g.down)} & ${String(g.toGo).toLowerCase()==='goal'?'Goal':esc(g.toGo||'')} • Ball on ${esc(g.ballOn||'')}`;
- document.getElementById('publicApp').innerHTML=`<section class="public-scoreboard card"><div class="public-statusline">${status}</div><div class="public-score"><div class="public-team-block"><div class="public-team">IRA BULLDOGS</div><div class="public-score-number">${Number(g.iraScore||0)}</div><div class="public-ball-marker">${!g.final&&g.possession==='ira'?'🏈':''}</div></div><div class="score-dash">–</div><div class="public-team-block"><div class="public-team">${esc(String(g.opponent||'Opponent').toUpperCase())}</div><div class="public-score-number">${Number(g.oppScore||0)}</div><div class="public-ball-marker">${!g.final&&g.possession==='opp'?'🏈':''}</div></div></div>${situation?`<div class="public-situation">${situation}</div>`:''}${x.listenUrl?`<a class="listen-btn" href="${esc(x.listenUrl)}" target="_blank" rel="noopener">▶ Listen Live</a>`:''}</section><section class="public-info-grid"><section class="card public-update-card"><div class="eyebrow">LATEST PLAY</div><div class="latest-update">${play?esc(play):'Play details will appear here when entered from the radio booth.'}</div></section><section class="card public-update-card"><div class="eyebrow">LATEST UPDATE</div><div class="latest-update">${update?esc(update):'Score and game status are live. Additional radio updates will appear here when sent from the booth.'}</div></section></section>`;
+(() => {
+'use strict';
+const API=String(window.IRA_PUBLIC_API_URL||'').trim();
+let lastSuccess=0;
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function score(v){const n=Number(v);return Number.isFinite(n)?Math.max(0,Math.round(n)):0}
+function color(v){return /^#[0-9a-fA-F]{6}$/.test(String(v||''))?String(v):'#1f5fbf'}
+function fmtTime(iso){try{return new Intl.DateTimeFormat(undefined,{hour:'numeric',minute:'2-digit'}).format(new Date(iso))}catch{return ''}}
+function badge(text){document.getElementById('connectionBadge').textContent=text}
+function renderResponse(resp){
+  const data=resp?.data;
+  if(!resp?.ok||!data?.game){document.getElementById('publicApp').innerHTML='<section class="waiting"><h2>Ira Bulldogs Scoreboard</h2><p>Waiting for the radio booth to publish the game.</p></section>';badge('Waiting for update');return}
+  const g=data.game;
+  const opp=String(g.opponent||'Opponent').trim()||'Opponent';
+  const oppColor=color(g.opponentColor);
+  document.documentElement.style.setProperty('--opp',oppColor);
+  const updates=Array.isArray(g.updates)?[...g.updates].sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||''))):[];
+  const feed=updates.length?updates.map(u=>`<article class="update"><div class="update-text">${esc(u.text)}</div><div class="update-time">${esc(fmtTime(u.createdAt))}${u.editedAt?' · edited':''}</div></article>`).join(''):'<div class="empty-feed">No game updates posted yet.</div>';
+  document.getElementById('publicApp').innerHTML=`<section class="score-wrap"><div class="score-row"><div class="team ira"><div class="team-name">IRA BULLDOGS</div><div class="score">${score(g.iraScore)}</div><div class="ball ${g.possession==='ira'?'':'empty'}">🏈 HAS THE BALL</div></div><div class="team opponent"><div class="team-name">${esc(opp.toUpperCase())}</div><div class="score">${score(g.oppScore)}</div><div class="ball ${g.possession==='opponent'?'':'empty'}">🏈 HAS THE BALL</div></div></div></section><section class="updates">${feed}</section>`;
+  lastSuccess=Date.now();badge('Live · updates automatically');
 }
-function jsonp(){if(!API){document.getElementById('publicApp').innerHTML='<div class="card setup-card"><h2>Public scoreboard is ready</h2><p>Connect the deployed Google Apps Script URL in <code>config.js</code>.</p></div>';setBadge('Setup needed','stale');return}const cb='iraPublic_'+Date.now()+'_'+Math.floor(Math.random()*10000);let script;window[cb]=d=>{try{render(d)}finally{delete window[cb];script.remove()}};script=document.createElement('script');script.src=API+(API.includes('?')?'&':'?')+'action=public&callback='+encodeURIComponent(cb)+'&_='+Date.now();script.onerror=()=>{setBadge('Connection issue','stale');delete window[cb];script.remove()};document.body.appendChild(script)}
-jsonp();setInterval(jsonp,12000);
+function jsonp(){
+  if(!API){document.getElementById('publicApp').innerHTML='<section class="waiting"><h2>Scoreboard setup needed</h2><p>The public API URL is missing from config.js.</p></section>';badge('Setup needed');return}
+  const cb='iraSimplePublic_'+Date.now()+'_'+Math.floor(Math.random()*1e6);const s=document.createElement('script');
+  window[cb]=d=>{cleanup();renderResponse(d)};function cleanup(){try{delete window[cb]}catch{}s.remove()}
+  s.onerror=()=>{cleanup();badge(lastSuccess?'Connection interrupted · showing last update':'Connection issue')};
+  s.src=API+(API.includes('?')?'&':'?')+'action=public&callback='+encodeURIComponent(cb)+'&_='+Date.now();document.body.appendChild(s);
+  setTimeout(()=>{if(window[cb]){cleanup();badge(lastSuccess?'Connection slow · showing last update':'Connection slow')}},7000);
+}
+jsonp();setInterval(jsonp,5000);
+window.__IRA_PUBLIC_TEST={renderResponse,score,color};
+})();
